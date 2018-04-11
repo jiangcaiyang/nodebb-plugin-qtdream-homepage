@@ -34,5 +34,8 @@
       "email": "jiangcaiyang12345@126.com"
     }
   ],
-  "directories": {}
+  "directories": {},
+  "dependencies": {
+    "npm": "^5.8.0"
+  }
 }
