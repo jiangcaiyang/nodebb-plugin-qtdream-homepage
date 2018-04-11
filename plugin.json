@@ -1,0 +1,67 @@
+{
+    "id": "nodebb-plugin-qtdream-homepage",
+	"name": "Qt Dream homepage for Qt Dream site",
+	"description": "Allows you to define your image based homepage such as youtube.com, youku.com or vimeo.com.",
+	"url": "https://github.com/jiangcaiyang/nodebb-plugin-qtdream-homepage",
+	"library": "./library.js",
+	"hooks": [
+		{
+			"hook": "static:app.load", "method": "initialize"
+		},
+		{
+			"hook": "filter:header.build", "method": "addNavigation"
+		},
+		{
+			"hook": "filter:widgets.getAreas", "method": "defineWidgetAreas"
+		},
+		{
+			"hook": "filter:widgets.getWidgets", "method": "defineWidgets"
+		},
+		{
+			"hook": "action:homepage.get:qtdream", "method": "serveHomepage"
+		},
+		{
+			"hook": "action:homepage.get:about", "method": "serveAboutPage"
+		},
+		{
+			"hook": "filter:homepage.get", "method": "addListing"
+		},
+		{
+			"hook": "filter:widget.render:carousel-3d", "method": "renderCarousel3DWidget"
+		},
+		{
+			"hook": "filter:widget.render:qtdream-player", "method": "renderQtDreamPlayerWidget"
+		},
+		{
+			"hook": "filter:widget.render:imageitem-view-4", "method": "renderImageItemViewWidget"
+		},
+		{
+			"hook": "filter:widget.render:imageitem-view-8", "method": "renderImageItemViewWidget"
+		},
+		{
+			"hook": "action:plugin.uninstall", "method": "onPluginUninstall"
+		}
+	],
+	"templates": "./templates",
+	"css": [
+		"styles/carousel-3d/jquery.carousel-3d.qtdream.css",
+		"styles/imageitem-view/imageitems.css"
+	],
+	"scripts":
+	[
+		"scripts/carousel-3d/jquery.resize.js",
+		"scripts/carousel-3d/jquery.waitforimages.js",
+		"scripts/carousel-3d/modernizr.js",
+		"scripts/carousel-3d/jquery.carousel-3d.js",
+
+		"scripts/qtdream-player/APlayer.js",
+		"scripts/qtdream-player/qtdream-player.js"
+	],
+	"staticDirs":
+	{
+		"carousel3d_image": "styles/carousel-3d/images/qtdream",
+		"imageitem-view_image": "styles/imageitem-view/images",
+		"carousel3d_scripts": "scripts/carousel-3d"
+	},
+	"compatibility": "^1.7.0"
+}

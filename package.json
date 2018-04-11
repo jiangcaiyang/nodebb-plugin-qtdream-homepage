@@ -1,0 +1,38 @@
+{
+  "name": "nodebb-plugin-qtdream-homepage",
+  "version": "2.0.0",
+  "description": "Allows you to define your image based homepage such as youtube.com, youku.com or vimeo.com.",
+  "main": "./library.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jiangcaiyang/nodebb-plugin-qtdream-homepage"
+  },
+  "keywords": [
+    "nodebb",
+    "plugin",
+    "qtdream",
+    "homepage"
+  ],
+  "author": {
+    "name": "jiangcaiyang",
+    "email": "jiangcaiyang12345@126.com"
+  },
+  "nbbpm": {
+    "compatibility": "^1.7.0"
+  },
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/jiangcaiyang/nodebb-plugin-qtdream-homepage/issues"
+  },
+  "homepage": "https://qtdream.com",
+  "maintainers": [
+    {
+      "name": "jiangcaiyang",
+      "email": "jiangcaiyang12345@126.com"
+    }
+  ],
+  "directories": {}
+}
