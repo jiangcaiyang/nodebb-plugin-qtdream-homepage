@@ -14,18 +14,23 @@
 
 <script>
 'use strict';
-$(document).ready( function( ) {
-    var bgColor = $( "body" ).css( "background" );
-    $( "#hover_{imageitems.id}" ).css( { "background": bgColor } );
-    $( ".image_responsive" ).css( { "background": bgColor } );
-    $( "#a_{imageitems.id}" ).hover( function ( )
-    {
-        $( "#hover_{imageitems.id}" ).addClass( "hide_on_hover_1" );
-    }, function ( )
-    {
-        $( "#hover_{imageitems.id}" ).removeClass( "hide_on_hover_1" );
-    } );
-} );
+var onLoad = function( ) {
+     var bgColor = $( "body" ).css( "background" );
+     $( "#hover_{imageitems.id}" ).css( { "background": bgColor } );
+     $( ".image_responsive" ).css( { "background": bgColor } );
+     $( "#a_{imageitems.id}" ).hover( function ( )
+     {
+         $( "#hover_{imageitems.id}" ).addClass( "hide_on_hover_1" );
+     }, function ( )
+     {
+         $( "#hover_{imageitems.id}" ).removeClass( "hide_on_hover_1" );
+     } );
+ };
+if ( window.jQuery ) {
+	onLoad( );
+} else {
+	window.addEventListener('load', onLoad );
+}
 </script>
 
 <!-- END imageitems -->

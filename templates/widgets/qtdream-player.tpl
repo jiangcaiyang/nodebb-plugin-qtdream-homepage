@@ -3,27 +3,31 @@
 <script>
 'use strict';
 var ap5;
-$(document).ready( function( ) {
-
-    require( [ "qtdreamplayer" ], function ( qtdreamplayer )
-    {
-        qtdreamplayer.getSongsFromRadio( "{moefouAPIKey}", "{radioID}", 1, function ( err, musics )
-        {
-            if ( ap5 ) return;
-            ap5 = new qtdreamplayer.APlayer( {
-                element: document.getElementById( "aplayer5" ),
-                narrow: false,
-                autoplay: false,
-                showlrc: false,
-                theme: "#ad7a86",
-                listmaxheight: 33 * ( ( musics && musics.length )? ( musics.length + 0 ): 0 ) + "px",
-                music: musics
-                } );
-        } );
-    } );
-} );
-$(document).on( "unload", function ( )
+var onLoad = function( ) {
+     require( [ "qtdreamplayer" ], function ( qtdreamplayer )
+     {
+         qtdreamplayer.getSongsFromRadio( "{moefouAPIKey}", "{radioID}", 1, function ( err, musics )
+         {
+             if ( ap5 ) return;
+             ap5 = new qtdreamplayer.APlayer( {
+                 element: document.getElementById( "aplayer5" ),
+                 narrow: false,
+                 autoplay: false,
+                 showlrc: false,
+                 theme: "#ad7a86",
+                 listmaxheight: 33 * ( ( musics && musics.length )? ( musics.length + 0 ): 0 ) + "px",
+                 music: musics
+                 } );
+         } );
+     }
+};
+if ( window.jQuery ) {
+	onLoad( );
+} else {
+	window.addEventListener('load', onLoad );
+}
+window.addEventListener( 'unload', function ( )
 {
-    if ( ap5 ) ap5.pause( );
+   if ( ap5 ) ap5.pause( );
 } );
 </script>

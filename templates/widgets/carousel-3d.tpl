@@ -5,7 +5,7 @@
 </div>
 <script>
 'use strict';
-$(document).ready( function( ) {
+var onLoad = function( ) {
     var found = $('div[data-carousel-3d="valid"]');
     found.Carousel3d( );
     var timerFunc = function ( )
@@ -14,5 +14,10 @@ $(document).ready( function( ) {
         if ( {infinite} ) setTimeout( timerFunc, {interval} );
     };
     if ( {infinite} ) setTimeout( timerFunc, {interval} );
-} );
+};
+if ( window.jQuery ) {
+	onLoad( );
+} else {
+	window.addEventListener('load', onLoad );
+}
 </script>
