@@ -17,10 +17,10 @@
 		helpers.setupPageRoute( params.router, '/qtdream', params.middleware, [ ],
 			function ( req, res )
 			{
-				res.render( "homepage",
+				res.render( "qtdream",
 					{
-						template: { name: "homepage" },
-						title: "主页"
+						template: { name: "qtdream" },
+						title: "萌梦主页"
 					} );
 			} );
 		helpers.setupPageRoute( params.router, '/about', params.middleware, [ ],
@@ -34,12 +34,12 @@
 			} );
 
 		var templates =
-		[
-			"admin/carousel-3d.tpl",
-			"admin/qtdream-player.tpl",
-			"admin/imageitem-view-4.tpl",
-			"admin/imageitem-view-8.tpl"
-		];
+			[
+				"admin/carousel-3d.tpl",
+				"admin/qtdream-player.tpl",
+				"admin/imageitem-view-4.tpl",
+				"admin/imageitem-view-8.tpl"
+			];
 		var loadTemplate = function ( template, next )
 		{
 			fs.readFile( path.resolve( __dirname, './templates/' + template ),
@@ -58,10 +58,10 @@
 		callback( );
 	};
 
-	Plugin.serveHomepage = function(params){
-		params.res.render('homepage', {
+	Plugin.serveQtDream = function(params){
+		params.res.render('qtdrema', {
 			template: {
-				name: 'homepage'
+				name: 'qtdream'
 			}
 		});
 	};
@@ -85,7 +85,7 @@
 				class: '',
 				text: 'QtDreamHomepage',
 				iconClass: 'fa-comments',
-				title: 'Forum',
+				title: 'Home',
 				textClass: 'visible-xs-inline'
 			}
 		);
@@ -103,36 +103,36 @@
 	};
 
 	Plugin.defineWidgetAreas = function(areas, callback) {
-		var homepageWidgets =
+		var qtdreamWidgets =
 			[
 				{
-					'name': 'Homepage header',
-					'template': 'homepage.tpl',
+					'name': 'QtDream header',
+					'template': 'qtdream.tpl',
 					'location': 'header'
 				},
 				{
-					'name': 'Homepage fancy widget',
-					'template': 'homepage.tpl',
+					'name': 'QtDream fancy widget',
+					'template': 'qtdream.tpl',
 					'location': 'fancy_widget'
 				},
 				{
-					'name': 'Homepage AD banner',
-					'template': 'homepage.tpl',
+					'name': 'QtDream AD banner',
+					'template': 'qtdream.tpl',
 					'location': 'banner'
 				},
 				{
-					'name': 'Homepage categories',
-					'template': 'homepage.tpl',
+					'name': 'QtDream categories',
+					'template': 'qtdream.tpl',
 					'location': 'categories'
 				},
 				{
-					'name': 'Homepage side bar',
-					'template': 'homepage.tpl',
+					'name': 'QtDream side bar',
+					'template': 'qtdream.tpl',
 					'location': 'sidebar'
 				},
 				{
-					'name': 'Homepage home page footer',
-					'template': 'homepage.tpl',
+					'name': 'QtDream home page footer',
+					'template': 'qtdream.tpl',
 					'location': 'footer'
 				},
 			];
@@ -154,7 +154,7 @@
 					'location': 'sidebar'
 				}
 			];
-		areas = areas.concat( homepageWidgets, aboutWidgets );
+		areas = areas.concat( qtdreamWidgets, aboutWidgets );
 		callback(null, areas);
 	};
 
@@ -193,24 +193,24 @@
 	Plugin.renderCarousel3DWidget = function ( widget, callback )
 	{
 		var data =
-		{
-			"htmls": [ ],
-			"relative_path": nconf.get( "relative_path" ),
-			"infinite": ( widget.data.infinite == "on" || false ),
-			"interval": ( widget.data.interval || 3000 )
-		};
+			{
+				"htmls": [ ],
+				"relative_path": nconf.get( "relative_path" ),
+				"infinite": ( widget.data.infinite == "on" || false ),
+				"interval": ( widget.data.interval || 3000 )
+			};
 		var htmlCount = 6;
 		for ( var i = 0; i < htmlCount; ++i )
 		{
 			var html =
-			{
-				"index": i,
-				"value": widget.data["html" + i]
-			};
+				{
+					"index": i,
+					"value": widget.data["html" + i]
+				};
 			data.htmls.push( html );
 		}
-        app.render( "widgets/carousel-3d",
-            data,
+		app.render( "widgets/carousel-3d",
+			data,
 			function( err, html )
 			{
 				widget.html = html;
@@ -221,12 +221,12 @@
 	Plugin.renderQtDreamPlayerWidget = function ( widget, callback )
 	{
 		var data =
-		{
-			"moefouAPIKey": widget.data.moefouAPIKey,
-			"radioID": widget.data.radioID
-		};
-        app.render( "widgets/qtdream-player",
-            data,
+			{
+				"moefouAPIKey": widget.data.moefouAPIKey,
+				"radioID": widget.data.radioID
+			};
+		app.render( "widgets/qtdream-player",
+			data,
 			function( err, html )
 			{
 				widget.html = html;
@@ -243,55 +243,55 @@
 	function getImageItem( tid, uid, callback )
 	{
 		async.waterfall(
-		[
-			function ( next )
-			{
-				topics.getMainPost( tid, uid, next );
-			},
-			function ( post, next )
-			{
-				var cover = "";
-				if ( post && post.content )
+			[
+				function ( next )
 				{
-					var imgPrefix = "<img src=\"";
-					var i = post.content.indexOf( imgPrefix );
-					if ( i >= 0 )
+					topics.getMainPost( tid, uid, next );
+				},
+				function ( post, next )
+				{
+					var cover = "";
+					var hasCover = true;
+					if ( post && post.content )
 					{
-						i += imgPrefix.length;
-						while ( post.content[i] !== '\"' )
+						var imgPrefix = "<img src=\"";
+						var i = post.content.indexOf( imgPrefix );
+						if ( i >= 0 )
 						{
-							cover += post.content[i++];
+							i += imgPrefix.length;
+							while ( post.content[i] !== '\"' )
+							{
+								cover += post.content[i++];
+							}
 						}
 					}
+					var pluginPrefix = "plugins/nodebb-plugin-qtdream-homepage/imageitem-view_image";
+					if ( !cover.startsWith( "/" ) &&
+						!cover.startsWith( "http" ) )
+					{
+						// 使用一个替代的图片URL
+						cover = pluginPrefix + "/no-picture.png";
+						hasCover = false;
+					}
+					topics.getTopicsByTids( [ tid ], uid, function ( err, _topics )
+					{
+						var topic = _topics[0];
+						var data =
+						{
+							"id": topic.tid,
+							"hasCover": hasCover,
+							"cover": cover,
+							"title": topic.title,
+							"titleUrl": "/topic/" + topic.tid,
+							"author": topic.user.username,
+							"authorUrl": "/user/" + topic.user.username,
+							"popularity": topic.viewcount,
+							"brief": topic.title.substr( 0, 4 )
+						};
+						next( err, data );
+					} );
 				}
-				var pluginPrefix = "plugins/nodebb-plugin-qtdream-homepage/imageitem-view_image";
-				if ( !cover.startsWith( "/" ) &&
-					 !cover.startsWith( "http" ) )
-				{
-					// 使用一个替代的图片URL
-					cover = pluginPrefix + "/no-picture.png";
-				}
-				topics.getTopicsByTids( [ tid ], uid, function ( err, topics )
-				{
-					topics[0].cover = cover;
-					next( err, topics[0] );
-				} );
-			},
-			function ( topic, next )
-			{
-				var data =
-				{
-					"cover": topic.cover,
-					"title": topic.title,
-					"titleUrl": "/topic/" + topic.tid,
-					"author": topic.user.username,
-					"authorUrl": "/user/" + topic.user.username,
-					"popularity": topic.viewcount,
-					"id": topic.tid
-				};
-				next( null, data );
-			}
-		], callback );
+			], callback );
 	}
 
 	function getRecentTopicTids( count, cid, callback )
@@ -332,83 +332,83 @@
 	Plugin.renderImageItemViewWidget = function ( widget, callback )
 	{
 		async.waterfall(
-		[
-			function ( next )
-			{
-				var topicCount = 0;
-				do// 决定图形项目的个数
+			[
+				function ( next )
 				{
-					var tid = widget.data["tid" + topicCount];
-					if ( typeof ( tid ) !== "undefined" ) topicCount++;
-					else break;
-				}
-				while ( true );
-
-				var renderImageItemView = function ( tids, theNext )
-				{
-					async.map( tids, function ( tid, callback )
-						{
-							getImageItem( tid, widget.uid, callback )
-						},
-						function ( err, imageitems )
-						{
-							var data =
-							{
-								"imageitems": imageitems,
-								"heading": widget.data.heading,
-								"relative_path": nconf.get('relative_path')
-							};
-							app.render( "widgets/imageitem-view",
-                            data, theNext );
-						} );
-				};
-
-				if ( widget.data.autoUpdate == "on" )
-				{
-					// 可能使用async.parallel来实现效果
-					var categories = widget.data.category.split( "," );
-					for ( var i in categories )
+					var topicCount = 0;
+					do// 决定图形项目的个数
 					{
-						categories[i] = categories[i].replace(/(^\s*)|(\s*$)/g, "");
+						var tid = widget.data["tid" + topicCount];
+						if ( typeof ( tid ) !== "undefined" ) topicCount++;
+						else break;
 					}
-					async.map( categories,
-						async.apply( getRecentTopicTids, topicCount ),
-						function ( err, tids )// 注意tids是一个二维数组
-						{
-							var totalTids = [ ];
-							tids.forEach( function ( eachTids )
+					while ( true );
+
+					var renderImageItemView = function ( tids, theNext )
+					{
+						async.map( tids, function ( tid, callback )
 							{
-								eachTids.forEach( function ( eachTid )
-								{
-									totalTids.push( eachTid );
-								} );
+								getImageItem( tid, widget.uid, callback )
+							},
+							function ( err, imageitems )
+							{
+								var data =
+									{
+										"imageitems": imageitems,
+										"heading": widget.data.heading,
+										"relative_path": nconf.get('relative_path')
+									};
+								app.render( "widgets/imageitem-view",
+									data, theNext );
 							} );
+					};
 
-							// 根据tids的大小来设定，最大的tid放在最前
-							totalTids.sort( function ( a, b ) { return parseInt( a ) > parseInt( b )? -1: 1; } );
-
-							// 最终要限制到topicCount个帖子大小
-							totalTids = totalTids.slice( 0, topicCount );
-
-							renderImageItemView( totalTids, next );
-						} );
-				}
-				else
-				{
-					var tids = [ ];
-					for ( var i = 0; i < topicCount; ++i )
+					if ( widget.data.autoUpdate == "on" )
 					{
-						tids.push( widget.data["tid" + i] );
+						// 可能使用async.parallel来实现效果
+						var categories = widget.data.category.split( "," );
+						for ( var i in categories )
+						{
+							categories[i] = categories[i].replace(/(^\s*)|(\s*$)/g, "");
+						}
+						async.map( categories,
+							async.apply( getRecentTopicTids, topicCount ),
+							function ( err, tids )// 注意tids是一个二维数组
+							{
+								var totalTids = [ ];
+								tids.forEach( function ( eachTids )
+								{
+									eachTids.forEach( function ( eachTid )
+									{
+										totalTids.push( eachTid );
+									} );
+								} );
+
+								// 根据tids的大小来设定，最大的tid放在最前
+								totalTids.sort( function ( a, b ) { return parseInt( a ) > parseInt( b )? -1: 1; } );
+
+								// 最终要限制到topicCount个帖子大小
+								totalTids = totalTids.slice( 0, topicCount );
+
+								renderImageItemView( totalTids, next );
+							} );
 					}
-					renderImageItemView( tids, next );
+					else
+					{
+						var tids = [ ];
+						for ( var i = 0; i < topicCount; ++i )
+						{
+							tids.push( widget.data["tid" + i] );
+						}
+						renderImageItemView( tids, next );
+					}
+				},
+				function ( html, next )
+				{
+					widget.html = html;
+					next( null, widget );
 				}
-			},
-			function ( html, next )
-			{
-				widget.html = html;
-				next( null, widget );
-			}
-		], callback );
+			], callback );
 	};
 
 	///////////////////////////////////////////////////////////////////////////
@@ -419,9 +419,9 @@
 		params.res.render( "about",
 			{
 				template:
-				{
-					name: "about"
-				}
+					{
+						name: "about"
+					}
 			} );
 	};
 

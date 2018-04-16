@@ -18,13 +18,13 @@
 			"hook": "filter:widgets.getWidgets", "method": "defineWidgets"
 		},
 		{
-			"hook": "action:homepage.get:qtdream", "method": "serveHomepage"
+			"hook": "action:qtdream.get:qtdream", "method": "serveQtDream"
 		},
 		{
-			"hook": "action:homepage.get:about", "method": "serveAboutPage"
+			"hook": "action:qtdream.get:about", "method": "serveAboutPage"
 		},
 		{
-			"hook": "filter:homepage.get", "method": "addListing"
+			"hook": "filter:qtdream.get", "method": "addListing"
 		},
 		{
 			"hook": "filter:widget.render:carousel-3d", "method": "renderCarousel3DWidget"
