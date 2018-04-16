@@ -5,6 +5,7 @@
 	var async = module.parent.require( 'async' );
 	var fs = require( 'fs' );
 	var path = require( 'path' );
+	var categories = module.parent.require( './categories' );
 	var topics = module.parent.require( './topics' );
 	var db = module.parent.require( './database' );
 	var helpers = module.parent.require('./routes/helpers');
@@ -240,13 +241,13 @@
 		console.log( "the plugin: " + id + ", can be uninstalled." );
 	};
 
-	function getImageItem( tid, uid, callback )
+	function getImageItem( topic, uid, callback )
 	{
 		async.waterfall(
 			[
 				function ( next )
 				{
-					topics.getMainPost( tid, uid, next );
+					topics.getMainPost( topic.id, uid, next );
 				},
 				function ( post, next )
 				{
@@ -273,20 +274,21 @@
 						cover = pluginPrefix + "/no-picture.png";
 						hasCover = false;
 					}
-					topics.getTopicsByTids( [ tid ], uid, function ( err, _topics )
+					topics.getTopicsByTids( [ topic.id ], uid, function ( err, _topics )
 					{
-						var topic = _topics[0];
+						var _topic = _topics[0];
 						var data =
 						{
-							"id": topic.tid,
+							"id": _topic.tid,
 							"hasCover": hasCover,
 							"cover": cover,
-							"title": topic.title,
-							"titleUrl": "/topic/" + topic.tid,
-							"author": topic.user.username,
-							"authorUrl": "/user/" + topic.user.username,
-							"popularity": topic.viewcount,
-							"brief": topic.title.substr( 0, 4 )
+							"bgColor": topic.bgColor,
+							"title": _topic.title,
+							"titleUrl": "/topic/" + _topic.tid,
+							"author": _topic.user.username,
+							"authorUrl": "/user/" + _topic.user.username,
+							"popularity": _topic.viewcount,
+							"brief": _topic.title.substr( 0, 4 )
 						};
 						next( err, data );
 					} );
@@ -294,39 +296,57 @@
 			], callback );
 	}
 
+	function getCategoryColor( cid, callback )
+	{
+		categories.getCategoryField( cid, "bgColor", callback );
+	}
+
 	function getRecentTopicTids( count, cid, callback )
 	{
-		if (count === 1) {
-			async.waterfall([
-				function (next) {
-					db.getSortedSetRevRange('cid:' + cid + ':pids', 0, 0, next);
+		categories.getCategoryField( cid, "bgColor", function ( err, bgColor )
+		{
+			if (err ){
+				return callback( err );
+			}
+			if (count === 1) {
+				async.waterfall([
+					function (next) {
+						db.getSortedSetRevRange('cid:' + cid + ':pids', 0, 0, next);
+					},
+					function (pid, next) {
+						posts.getPostField(pid, 'tid', next);
+					},
+					function (tid, next) {
+						var topic = { "id": tid, "bgColor": bgColor };
+						next( null, topic );
+					}
+				], callback);
+				return;
+			}
+
+			async.parallel({
+				pinnedTids: function(next) {
+					db.getSortedSetRevRangeByScore('cid:' + cid + ':tids', 0, -1, '+inf', Date.now(), next);
 				},
-				function (pid, next) {
-					posts.getPostField(pid, 'tid', next);
-				},
-				function (tid, next) {
-					next(null, [tid]);
+				tids: function(next) {
+					db.getSortedSetRevRangeByScore('cid:' + cid + ':tids', 0, Math.max(1, count), Date.now(), '-inf', next);
 				}
-			], callback);
-			return;
-		}
-
-		async.parallel({
-			pinnedTids: function(next) {
-				db.getSortedSetRevRangeByScore('cid:' + cid + ':tids', 0, -1, '+inf', Date.now(), next);
-			},
-			tids: function(next) {
-				db.getSortedSetRevRangeByScore('cid:' + cid + ':tids', 0, Math.max(1, count), Date.now(), '-inf', next);
-			}
-		}, function(err, results) {
-			if (err) {
-				return callback(err);
-			}
-
-			results.tids = results.tids.concat(results.pinnedTids);
-
-			callback(null, results.tids);
+			}, function(err, results) {
+				if (err) {
+					return callback(err);
+				}
+				results.tids = results.tids.concat(results.pinnedTids);
+				var topics = [ ];
+				results.tids.forEach( function ( tid )
+				{
+					topics.push( { "id": tid, "bgColor": bgColor } );
+				} );
+				callback( null, topics );
+			} );
 		} );
+
+
+
 	}
 
 	Plugin.renderImageItemViewWidget = function ( widget, callback )
@@ -344,20 +364,20 @@
 					}
 					while ( true );
 
-					var renderImageItemView = function ( tids, theNext )
+					var renderImageItemView = function ( topics, theNext )
 					{
-						async.map( tids, function ( tid, callback )
+						async.map( topics, function ( topic, callback )
 							{
-								getImageItem( tid, widget.uid, callback )
+								getImageItem( topic, widget.uid, callback )
 							},
 							function ( err, imageitems )
 							{
 								var data =
-									{
-										"imageitems": imageitems,
-										"heading": widget.data.heading,
-										"relative_path": nconf.get('relative_path')
-									};
+								{
+									"imageitems": imageitems,
+									"heading": widget.data.heading,
+									"relative_path": nconf.get('relative_path')
+								};
 								app.render( "widgets/imageitem-view",
 									data, theNext );
 							} );
@@ -373,34 +393,40 @@
 						}
 						async.map( categories,
 							async.apply( getRecentTopicTids, topicCount ),
-							function ( err, tids )// 注意tids是一个二维数组
+							function ( err, topics )// 注意tids是一个二维数组
 							{
-								var totalTids = [ ];
-								tids.forEach( function ( eachTids )
+								var totalTopics = [ ];
+								topics.forEach( function ( eachTopics )
 								{
-									eachTids.forEach( function ( eachTid )
+									eachTopics.forEach( function ( eachTopic )
 									{
-										totalTids.push( eachTid );
+										totalTopics.push( eachTopic );
 									} );
 								} );
 
 								// 根据tids的大小来设定，最大的tid放在最前
-								totalTids.sort( function ( a, b ) { return parseInt( a ) > parseInt( b )? -1: 1; } );
+								totalTopics.sort( function ( a, b )
+								{ return parseInt( a.id ) > parseInt( b.id )? -1: 1; } );
 
 								// 最终要限制到topicCount个帖子大小
-								totalTids = totalTids.slice( 0, topicCount );
+								totalTopics = totalTopics.slice( 0, topicCount );
 
-								renderImageItemView( totalTids, next );
+								renderImageItemView( totalTopics, next );
 							} );
 					}
 					else
 					{
-						var tids = [ ];
+						var topics = [ ];
 						for ( var i = 0; i < topicCount; ++i )
 						{
-							tids.push( widget.data["tid" + i] );
+							var topic =
+							{
+								"id": widget.data["tid" + i],
+								"bgColor": "white"// 这里需要判定tid来自哪个category
+							};
+							topics.push( topic );
 						}
-						renderImageItemView( tids, next );
+						renderImageItemView( topics, next );
 					}
 				},
 				function ( html, next )

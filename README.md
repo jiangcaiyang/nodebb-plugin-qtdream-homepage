@@ -7,7 +7,7 @@ the latter provides us with a custom template for self-introduction. Maybe good 
 
 ## Screenshots
 
-![homepage](screenshot.png)
+![homepage](http://i.imgur.com/GObRKQq.png)
 
 ## Installation
 
