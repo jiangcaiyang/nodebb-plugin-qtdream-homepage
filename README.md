@@ -7,8 +7,12 @@ the latter provides us with a custom template for self-introduction. Maybe good 
 
 ## Screenshots
 
-![homepage](http://i.imgur.com/GObRKQq.png)
+![homepage](screenshot.png)
 
 ## Installation
 
     npm install nodebb-plugin-qtdream-homepage
+
+## News!
+ver. 2.3.0
+    Added Live2D! Remu model appended, if you like other model, you could change model folder.

@@ -39,13 +39,18 @@
 			"hook": "filter:widget.render:imageitem-view-8", "method": "renderImageItemViewWidget"
 		},
 		{
+			"hook": "filter:widget.render:live2d", "method": "renderLive2DWidget"
+		},
+		{
 			"hook": "action:plugin.uninstall", "method": "onPluginUninstall"
 		}
 	],
 	"templates": "./templates",
 	"css": [
 		"styles/carousel-3d/jquery.carousel-3d.qtdream.css",
-		"styles/imageitem-view/imageitems.css"
+		"styles/imageitem-view/imageitems.css",
+		"styles/qtdream/qtdream.css",
+		"styles/live2d/live2d.css"
 	],
 	"scripts":
 	[
@@ -55,13 +60,19 @@
 		"scripts/carousel-3d/jquery.carousel-3d.js",
 
 		"scripts/qtdream-player/APlayer.js",
-		"scripts/qtdream-player/qtdream-player.js"
+		"scripts/qtdream-player/qtdream-player.js",
+
+		"scripts/live2d/js/live2d.js",
+		"scripts/live2d/js/message.js"
 	],
 	"staticDirs":
 	{
-		"carousel3d_image": "styles/carousel-3d/images/qtdream",
 		"imageitem-view_image": "styles/imageitem-view/images",
-		"carousel3d_scripts": "scripts/carousel-3d"
+		"qtdream_image": "styles/qtdream/images",
+		"carousel3d_image": "styles/carousel-3d/images/qtdream",
+		"carousel3d_scripts": "scripts/carousel-3d",
+		"live2d_scripts": "scripts/live2d",
+		"live2d_images": "styles/live2d/images"
 	},
 	"compatibility": "^1.7.0"
 }

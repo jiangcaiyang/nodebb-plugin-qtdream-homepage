@@ -11,8 +11,8 @@
 </div>
 
 <div class="row">
-	<div class="col-md-9 col-xs-12" no-widget-class="col-lg-12 col-xs-12" no-widget-target="qtdream-sidebar">
-	    <div class="column">
+    <div class="col-md-9 col-xs-12" no-widget-class="col-lg-12 col-xs-12" no-widget-target="sidebar">
+        <div class="column">
             <div widget-area="banner">
                 <!-- BEGIN widgets.banner -->
                 {{widgets.banner.html}}
@@ -23,8 +23,8 @@
                 {{widgets.categories.html}}
                 <!-- END widgets -->
             </div>
-	    </div>
-	</div>
+        </div>
+    </div>
 	<div class="col-md-3 col-xs-12">
 		<div widget-area="sidebar">
 			<!-- BEGIN widgets.sidebar -->

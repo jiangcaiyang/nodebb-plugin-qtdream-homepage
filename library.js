@@ -39,7 +39,8 @@
 				"admin/carousel-3d.tpl",
 				"admin/qtdream-player.tpl",
 				"admin/imageitem-view-4.tpl",
-				"admin/imageitem-view-8.tpl"
+				"admin/imageitem-view-8.tpl",
+				"admin/live2d.tpl"
 			];
 		var loadTemplate = function ( template, next )
 		{
@@ -60,7 +61,7 @@
 	};
 
 	Plugin.serveQtDream = function(params){
-		params.res.render('qtdrema', {
+		params.res.render('qtdream', {
 			template: {
 				name: 'qtdream'
 			}
@@ -186,6 +187,12 @@
 				name: "Image item view 8",
 				description: "The image item view for our site",
 				content: Plugin.templates["admin/imageitem-view-8.tpl"]
+			},
+			{
+				widget: "live2d",
+				name: "Live2D",
+				description: "The live2D model for this site",
+				content: Plugin.templates["admin/live2d.tpl"]
 			}
 		] );
 		callback( null, widgets );
@@ -227,6 +234,21 @@
 				"radioID": widget.data.radioID
 			};
 		app.render( "widgets/qtdream-player",
+			data,
+			function( err, html )
+			{
+				widget.html = html;
+				callback( err, widget );
+			} );
+	};
+
+	Plugin.renderLive2DWidget = function ( widget, callback )
+	{
+		var data =
+			{
+				"turing": widget.data.turing
+			};
+		app.render( "widgets/live2d",
 			data,
 			function( err, html )
 			{
