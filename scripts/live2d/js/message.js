@@ -3,7 +3,7 @@ define( "live2DMessage", [
 ], function ( live2D )
 {
 	var live2DMessage = {};
-	live2DMessage.initialize = function ( talkAPI )
+	live2DMessage.initialize = function ( turingKey )
 	{
 		var home_Path = document.location.protocol + '//' + window.document.location.hostname + '/';
 		var message_Path = "plugins/nodebb-plugin-qtdream-homepage/live2d_scripts/";
@@ -179,7 +179,7 @@ define( "live2DMessage", [
 							checkSleep();
 						}, 200);
 					}
-					console.log(sleepTimer_);
+					//console.log(sleepTimer_);
 				}
 			}
 
@@ -256,7 +256,7 @@ define( "live2DMessage", [
 						$('body').addClass(dataType);
 					}
 				});
-				if (talkAPI !== "") {
+				if ( turingKey !== "") {
 					$('#showInfoBtn').on('click', function () {
 						var live_statu = $('#live_statu_val').val();
 						if (live_statu == "0") {
@@ -297,11 +297,13 @@ define( "live2DMessage", [
 						showMessage('思考中~', 0);
 						$.ajax({
 							type: 'POST',
-							url: talkAPI,
-							data: {
+							url: "/turing123",
+							contentType: 'application/json',
+							data: JSON.stringify( {
 								"info": info_,
-								"userid": userid_
-							},
+								"userid": userid_,
+								"key": turingKey
+							} ),
 							success: function (res) {
 								if (res.code !== 100000) {
 									talkValTimer();

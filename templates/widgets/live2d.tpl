@@ -3,7 +3,7 @@
     <canvas id="live2d" width="500" height="560" class="live2d"></canvas>
     <div class="live_talk_input_body">
     	<div class="live_talk_input_name_body">
-        	<input name="name" type="text" class="live_talk_name white_input" id="AIuserName" autocomplete="off" placeholder="你的名字" />
+        	<input name="name" type="text" class="live_talk_name white_input" id="AIuserName" autocomplete="off" placeholder="你的名字"/>
         </div>
         <div class="live_talk_input_text_body">
         	<input name="talk" type="text" class="live_talk_talk white_input" id="AIuserText" autocomplete="off" placeholder="要和我聊什么呀？"/>
@@ -30,10 +30,10 @@
 var onLoad = function( ) {
      require( [ "live2DMessage" ], function ( live2DMessage )
      {
-        var talkAPI = "";
-        live2DMessage.initialize( talkAPI );
+        live2DMessage.initialize( "{turing}" );
         live2DMessage.onLoad( );
      } );
+     $( "#AIuserName" ).attr( "value", app.user.username );
 };
 if ( window.jQuery ) {
     onLoad( );

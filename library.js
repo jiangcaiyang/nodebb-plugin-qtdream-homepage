@@ -1,6 +1,7 @@
 (function(module) {
 	"use strict";
 
+	var http = require( "http" );
 	var nconf = module.parent.require( 'nconf' );
 	var async = module.parent.require( 'async' );
 	var fs = require( 'fs' );
@@ -11,6 +12,41 @@
 	var helpers = module.parent.require('./routes/helpers');
 	var app;
 	var Plugin = { "templates": { } };
+
+	function proxyPostTuring123( originalReq, originalRes )
+	{
+		var options =
+			{
+				"host": "openapi.tuling123.com",
+				"port": 80,
+				"path": "/openapi/api",
+				"method": "POST",
+				headers:
+				{
+					'Content-Type': 'application/json',
+				}
+			};
+
+		var proxyReq = http.request( options, function ( res )
+		{
+			var buffers = "";
+			res.on( "data", function ( chunk )
+			{
+				buffers += chunk;
+			} ).on( "end", function( )
+			{
+				originalRes.setHeader( 'Content-Type', 'application/json' );
+				originalRes.send( buffers );
+			} );
+		} );
+		proxyReq.setTimeout( 10000, function ( )
+		{
+			originalRes.json( { "error": "访问图灵机超时啦。" } );
+		} );
+		var postData = JSON.stringify( originalReq.body );
+		proxyReq.write( postData );
+		proxyReq.end( );
+	}
 
 	Plugin.initialize = function ( params, callback )
 	{
@@ -56,6 +92,13 @@
 		};
 
 		async.each( templates, loadTemplate );
+
+		var router = params.router;
+		router.post( "/turing123", function ( req, res )
+		{
+			var path = req.originalUrl.replace( /^\/turing123/, "" );
+			proxyPostTuring123( req, res );
+		} );
 
 		callback( );
 	};
@@ -246,7 +289,7 @@
 	{
 		var data =
 			{
-				"turing": widget.data.turing
+				"turing": widget.data.turing,
 			};
 		app.render( "widgets/live2d",
 			data,
