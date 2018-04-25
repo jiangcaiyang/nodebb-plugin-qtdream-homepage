@@ -6,7 +6,7 @@ define( "live2DMessage", [
 	live2DMessage.initialize = function ( turingKey )
 	{
 		var home_Path = document.location.protocol + '//' + window.document.location.hostname + '/';
-		var message_Path = "plugins/nodebb-plugin-qtdream-homepage/live2d_scripts/";
+		var message_Path = "/plugins/nodebb-plugin-qtdream-homepage/live2d_scripts/";
 		var userAgent = window.navigator.userAgent.toLowerCase();
 		var norunAI = [];//["android", "iphone", "ipod", "ipad", "windows phone", "mqqbrowser", "msie", "trident/7.0"];
 		var norunFlag = false;
