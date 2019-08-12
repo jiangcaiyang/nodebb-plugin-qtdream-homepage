@@ -19,21 +19,30 @@
         <div class="live_ico_item type_quit" id="hideButton"></div>
         <input name="live_statu_val" id="live_statu_val" value="0" type="hidden" />
         <audio src="" style="display:none;" id="live2d_bgm" data-bgm="0" preload="none"></audio>
-        <input name="live2dBGM" value="https://t1.aixinxi.net/o_1c52p4qbp15idv6bl55h381moha.mp3" type="hidden">
-        <input name="live2dBGM" value="https://t1.aixinxi.net/o_1c52p8frrlmf1aled1e14m56una.mp3" type="hidden">
+        <input name="live2dBGM" value="http://music.163.com/song/media/outer/url?id=29950979.mp3" type="hidden">
+        <input name="live2dBGM" value="http://music.163.com/song/media/outer/url?id=787015.mp3" type="hidden">
         <input id="duType" value="douqilai,l2d_caihong" type="hidden">
     </div>
 </div>
-<div id="open_live2d">召唤蕾姆</div>
+<div id="open_live2d">召唤伊斯特瓦尔</div>
 <script>
 'use strict';
 var onLoad = function( ) {
-     require( [ "live2DMessage" ], function ( live2DMessage )
-     {
-        live2DMessage.initialize( "{turing}" );
-        live2DMessage.onLoad( );
-     } );
-     $( "#AIuserName" ).attr( "value", app.user.username );
+    if ( window.live2DMessage )
+    {
+        window.live2DMessage.initialize( "{turing}" );
+        window.live2DMessage.loadLive2D( );
+    }
+    else
+    {
+        require( [ "live2DMessage" ], function ( live2DMessage )
+        {
+            live2DMessage.initialize( "{turing}" );
+            live2DMessage.loadLive2D( );
+            window.live2DMessage = live2DMessage;
+        } );
+    }
+    $( "#AIuserName" ).attr( "value", app.user.username );
 };
 if ( window.jQuery ) {
     onLoad( );
