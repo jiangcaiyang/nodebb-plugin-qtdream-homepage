@@ -5,19 +5,22 @@
 </div>
 <script>
 'use strict';
-var onLoad = function( ) {
-    var found = $('div[data-carousel-3d="valid"]');
-    found.Carousel3d( );
-    var timerFunc = function ( )
-    {
-        found.Carousel3d( 'next' );
-        if ( {infinite} ) setTimeout( timerFunc, {interval} );
-    };
-    if ( {infinite} ) setTimeout( timerFunc, {interval} );
-};
-if ( window.jQuery ) {
-	onLoad( );
-} else {
-	window.addEventListener('load', onLoad );
-}
+(function()
+{
+	var onLoad = function( ) {
+		var found = $('div[data-carousel-3d="valid"]');
+		found.Carousel3d( );
+		var timerFunc = function ( )
+		{
+			found.Carousel3d( 'next' );
+			if ( {infinite} ) setTimeout( timerFunc, {interval} );
+		};
+		if ( {infinite} ) setTimeout( timerFunc, {interval} );
+	};
+	if ( window.jQuery ) {
+		onLoad( );
+	} else {
+		window.addEventListener('load', onLoad );
+	}
+})();
 </script>

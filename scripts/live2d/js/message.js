@@ -22,7 +22,7 @@ define( "live2DMessage", [
 
 	var live2DMessage =
 	{
-		"message_Path": "/plugins/nodebb-plugin-qtdream-homepage/live2d_scripts/",
+		"live2DPath": "https://cdn.jsdelivr.net/npm/nodebb-plugin-qtdream-homepage@2.6.2/scripts/live2d",
 		"live2DIsFading": false,
 		"aiTalkFlag": true,
 		"turingKey": "",
@@ -70,7 +70,7 @@ define( "live2DMessage", [
 		} else {
 			this.hideMessage(0);
 			if ( this.sleepTimer_ == null) {
-				this.sleepTimer_ = setInterval( live2DMessage.checkSleep.bind( this ), 200);
+				this.sleepTimer_ = setInterval( this.checkSleep.bind( this ), 200);
 			}
 			//console.log(sleepTimer_);
 		}
@@ -165,7 +165,7 @@ define( "live2DMessage", [
 	{
 		$.ajax( {
 			cache: true,
-			url: this.message_Path + 'message.json',
+			url: this.live2DPath + '/message.json',
 			dataType: "json",
 			success: this.onInitTipsSuccess.bind( this )
 		} );
@@ -255,36 +255,17 @@ define( "live2DMessage", [
 			this.setLiveTalkTimer( );
 		}
 	};
-	live2DMessage.loadLive2D = function () {
-		var AIimgSrc = [
-			this.message_Path + "model/histoire/histoire.1024/texture_00.png",
-			this.message_Path + "model/histoire/histoire.1024/texture_01.png",
-			this.message_Path + "model/histoire/histoire.1024/texture_02.png",
-			this.message_Path + "model/histoire/histoire.1024/texture_03.png"
-		]
-		var images = [];
-		var imgLength = AIimgSrc.length;
-		var loadingNum = 0;
-		for (var i = 0; i < imgLength; i++) {
-			images[i] = new Image();
-			images[i].src = AIimgSrc[i];
-			images[i].onload = function () {
-				loadingNum++;
-				if (loadingNum === imgLength) {
-					var live2dhidden = localStorage.getItem("live2dhidden");
-					if (live2dhidden === "0") {
-						$('#open_live2d').fadeIn(200);
-					} else {
-						$('#landlord').fadeIn(200);
-					}
-					setTimeout(function () {
-						loadlive2d("live2d", live2DMessage.message_Path + "model/histoire/model.json");
-					}, 1000);
-					live2DMessage.initLive2D();
-					images = null;
-				}
-			}
+
+	live2DMessage.loadLive2D = function ( )
+	{
+		var live2dhidden = localStorage.getItem("live2dhidden");
+		if (live2dhidden === "0") {
+			$('#open_live2d').fadeIn(200);
+		} else {
+			$('#landlord').fadeIn(200);
 		}
+		loadlive2d("live2d", this.live2DPath + "/model/histoire/model.json");
+		this.initLive2D();
 	};
 
 	live2DMessage.onHideButtonClicked = function ( openLive2D, landlord )
@@ -367,19 +348,33 @@ define( "live2DMessage", [
 		}
 	};
 
+	live2DMessage.onTuringSuccess = function ( res )
+	{
+		if (res.code !== 100000) {
+			this.talkValTimer( );
+			this.showMessage('似乎有什么错误，请和站长联系！', 0);
+		} else {
+			this.talkValTimer( );
+			this.showMessage(res.text, 0);
+		}
+		console.log(res);
+		$('#AIuserText').val("");
+		sessionStorage.setItem("live2duser", userid_);
+	};
+
 	live2DMessage.onTalkSendButtonClicked = function ( )
 	{
 		var info_ = $('#AIuserText').val();
 		var userid_ = $('#AIuserName').val();
 		if (info_ == "") {
-			live2DMessage.showMessage('写点什么吧！', 0);
+			this.showMessage('写点什么吧！', 0);
 			return;
 		}
 		if (userid_ == "") {
-			live2DMessage.showMessage('聊之前请告诉我你的名字吧！', 0);
+			this.showMessage('聊之前请告诉我你的名字吧！', 0);
 			return;
 		}
-		live2DMessage.showMessage('思考中~', 0);
+		this.showMessage('思考中~', 0);
 		$.ajax({
 			type: 'POST',
 			url: "/turing123",
@@ -387,20 +382,9 @@ define( "live2DMessage", [
 			data: JSON.stringify( {
 				"info": info_,
 				"userid": userid_,
-				"key": live2DMessage.turingKey
+				"key": this.turingKey
 			} ),
-			success: function (res) {
-				if (res.code !== 100000) {
-					live2DMessage.talkValTimer( );
-					live2DMessage.showMessage('似乎有什么错误，请和站长联系！', 0);
-				} else {
-					live2DMessage.talkValTimer( );
-					live2DMessage.showMessage(res.text, 0);
-				}
-				console.log(res);
-				$('#AIuserText').val("");
-				sessionStorage.setItem("live2duser", userid_);
-			}
+			success: this.onTuringSuccess
 		});
 	};
 

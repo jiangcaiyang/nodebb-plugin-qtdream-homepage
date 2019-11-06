@@ -409,9 +409,6 @@
 				callback( null, topics );
 			} );
 		} );
-
-
-
 	}
 
 	Plugin.renderImageItemViewWidget = function ( widget, callback )
