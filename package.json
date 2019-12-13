@@ -8,7 +8,7 @@
   },
   "bundleDependencies": false,
   "dependencies": {
-    "npm": "^5.8.0"
+    "npm": "^6.13.4"
   },
   "deprecated": false,
   "description": "Allows you to define your image based homepage such as youtube.com, youku.com or vimeo.com.",
